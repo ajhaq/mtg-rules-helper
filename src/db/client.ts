@@ -19,8 +19,19 @@ export function getDb(path: string = DEFAULT_DB_PATH): DatabaseSync {
 
   const schema = readFileSync(join(__dirname, "schema.sql"), "utf-8");
   db.exec(schema);
+  addMissingCardColumns(db);
 
   return db;
+}
+
+// CREATE TABLE IF NOT EXISTS won't add columns to a database built before they existed.
+function addMissingCardColumns(database: DatabaseSync): void {
+  const existing = new Set(
+    (database.prepare("PRAGMA table_info(cards)").all() as unknown as { name: string }[]).map((c) => c.name)
+  );
+  for (const column of ["power", "toughness", "loyalty", "defense"]) {
+    if (!existing.has(column)) database.exec(`ALTER TABLE cards ADD COLUMN ${column} TEXT`);
+  }
 }
 
 export function closeDb(): void {

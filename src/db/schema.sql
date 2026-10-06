@@ -6,6 +6,10 @@ CREATE TABLE IF NOT EXISTS cards (
   mana_cost TEXT,
   type_line TEXT,
   oracle_text TEXT,
+  power TEXT,
+  toughness TEXT,
+  loyalty TEXT,
+  defense TEXT,
   colors TEXT,
   scryfall_uri TEXT
 );

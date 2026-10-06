@@ -19,6 +19,9 @@ async function main() {
     console.log(`${card.name} ${card.mana_cost ?? ""}`);
     console.log(card.type_line);
     console.log(card.oracle_text);
+    if (card.power !== null) console.log(`Power/Toughness: ${card.power}/${card.toughness}`);
+    if (card.loyalty !== null) console.log(`Loyalty: ${card.loyalty}`);
+    if (card.defense !== null) console.log(`Defense: ${card.defense}`);
     console.log("\nRulings:");
     for (const r of getRulingsForOracleId(card.oracle_id)) {
       console.log(`  [${r.published_at}] ${r.comment}`);

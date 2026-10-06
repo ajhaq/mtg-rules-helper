@@ -59,7 +59,7 @@ export function createTools(ctx: ToolContext) {
   const lookupCardTool = betaZodTool({
     name: "lookup_card",
     description:
-      "Look up a Magic card's current Oracle text, type line and official rulings by name. " +
+      "Look up a Magic card's current Oracle text, type line, printed power/toughness (or loyalty/defense) and official rulings by name. " +
       "Always use this for every card the question mentions: never rely on memory for card text, which gets errata'd.",
     inputSchema: z.object({
       name: z.string().describe("Card name; small typos are tolerated"),
@@ -72,6 +72,10 @@ export function createTools(ctx: ToolContext) {
         mana_cost: card.mana_cost,
         type_line: card.type_line,
         oracle_text: card.oracle_text,
+        ...(card.power !== null && { power: card.power }),
+        ...(card.toughness !== null && { toughness: card.toughness }),
+        ...(card.loyalty !== null && { loyalty: card.loyalty }),
+        ...(card.defense !== null && { defense: card.defense }),
         rulings: getRulingsForOracleId(card.oracle_id).map((r) => ({
           published_at: r.published_at,
           comment: r.comment,

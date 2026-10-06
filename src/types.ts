@@ -5,6 +5,10 @@ export interface CardRecord {
   mana_cost: string | null;
   type_line: string | null;
   oracle_text: string | null;
+  power: string | null;
+  toughness: string | null;
+  loyalty: string | null;
+  defense: string | null;
   colors: string | null;
   scryfall_uri: string | null;
 }

@@ -12,7 +12,13 @@ interface ScryfallBulkEntry {
 
 interface ScryfallCardFace {
   oracle_text?: string;
+  power?: string;
+  toughness?: string;
+  loyalty?: string;
+  defense?: string;
 }
+
+type StatKey = "power" | "toughness" | "loyalty" | "defense";
 
 interface ScryfallCard {
   oracle_id?: string;
@@ -20,6 +26,10 @@ interface ScryfallCard {
   mana_cost?: string;
   type_line?: string;
   oracle_text?: string;
+  power?: string;
+  toughness?: string;
+  loyalty?: string;
+  defense?: string;
   colors?: string[];
   scryfall_uri?: string;
   card_faces?: ScryfallCardFace[];
@@ -72,6 +82,13 @@ function resolveOracleText(card: ScryfallCard): string | null {
   return null;
 }
 
+/** Printed power/toughness/loyalty/defense; multi-faced cards get one value per face joined with " // ". Kept as text because values can be "*" or "1+*". */
+function resolveStat(card: ScryfallCard, key: StatKey): string | null {
+  if (card[key] !== undefined) return card[key];
+  const faceValues = (card.card_faces ?? []).map((f) => f[key]).filter((v): v is string => v !== undefined);
+  return faceValues.length ? faceValues.join(" // ") : null;
+}
+
 export async function ingestCards(): Promise<{ cards: number }> {
   const db = getDb();
   const uri = await getBulkDownloadUri("oracle_cards");
@@ -79,12 +96,13 @@ export async function ingestCards(): Promise<{ cards: number }> {
   const cards = await fetchJsonlGz<ScryfallCard>(uri);
 
   const insert = db.prepare(
-    `INSERT INTO cards (oracle_id, name, normalized_name, mana_cost, type_line, oracle_text, colors, scryfall_uri)
-     VALUES (@oracle_id, @name, @normalized_name, @mana_cost, @type_line, @oracle_text, @colors, @scryfall_uri)
+    `INSERT INTO cards (oracle_id, name, normalized_name, mana_cost, type_line, oracle_text, power, toughness, loyalty, defense, colors, scryfall_uri)
+     VALUES (@oracle_id, @name, @normalized_name, @mana_cost, @type_line, @oracle_text, @power, @toughness, @loyalty, @defense, @colors, @scryfall_uri)
      ON CONFLICT(oracle_id) DO UPDATE SET
        name=excluded.name, normalized_name=excluded.normalized_name, mana_cost=excluded.mana_cost,
-       type_line=excluded.type_line, oracle_text=excluded.oracle_text, colors=excluded.colors,
-       scryfall_uri=excluded.scryfall_uri`
+       type_line=excluded.type_line, oracle_text=excluded.oracle_text, power=excluded.power,
+       toughness=excluded.toughness, loyalty=excluded.loyalty, defense=excluded.defense,
+       colors=excluded.colors, scryfall_uri=excluded.scryfall_uri`
   );
 
   let count = 0;
@@ -98,6 +116,10 @@ export async function ingestCards(): Promise<{ cards: number }> {
         mana_cost: card.mana_cost ?? null,
         type_line: card.type_line ?? null,
         oracle_text: resolveOracleText(card),
+        power: resolveStat(card, "power"),
+        toughness: resolveStat(card, "toughness"),
+        loyalty: resolveStat(card, "loyalty"),
+        defense: resolveStat(card, "defense"),
         colors: card.colors ? JSON.stringify(card.colors) : null,
         scryfall_uri: card.scryfall_uri ?? null,
       });
