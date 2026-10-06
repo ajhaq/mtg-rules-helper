@@ -104,13 +104,15 @@ npm run eval -- --all                          # include unreviewed questions
 npm run eval -- --concurrency 1                # default is 3
 ```
 
-Each question is answered by the full pipeline, then scored three ways. A
-question passes only if all three hold:
+Each question is answered by the full pipeline, then scored four ways. A
+question passes only if all four hold:
 
 1. The answer's `status` matches `expected_status`.
 2. Every `must_cite` rule was cited (a lettered subrule counts for its parent,
    so citing `118.9a` satisfies `118.9`).
-3. A second Claude call grades the answer against `expected_answer` as
+3. Every cited rule number exists in the Comprehensive Rules. (Citing a real
+   rule the model never retrieved is only a warning, not a failure.)
+4. A second Claude call grades the answer against `expected_answer` as
    `correct`, `partially_correct` or `incorrect`; only `correct` passes. The
    grader sees the question, the reference answer and the app's answer, not
    `must_cite` or `notes`. It uses `MTG_RULES_GRADER_MODEL`, falling back to

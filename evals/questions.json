@@ -9,16 +9,16 @@
     "expected_answer": "Yes to both. It is an activated ability that is not a mana ability, so it is put on the stack when activated and the activator gets priority afterward; other players can respond before it resolves. When it resolves, the player whose turn it is (not necessarily Obeka's controller) may choose to end the turn, which follows the special procedure in 724.1.",
     "must_cite": [
       "602.2",
-      "117.3c",
       "724.1"
     ],
     "may_cite": [
+      "117.3c",
       "602.2a",
       "117.4",
       "605.1a",
       "724.1b"
     ],
-    "notes": "Tests that the answer notices 'the player whose turn it is' decides, and that ending the turn exiles the stack including the resolving ability. Draft expectations: not yet reviewed.",
+    "notes": "Tests that the answer notices 'the player whose turn it is' decides, and that ending the turn exiles the stack including the resolving ability. After the first live eval runs, 117.3c (the activator receives priority afterward) was moved from must_cite to may_cite: the app answered correctly without it and the question doesn't strictly need it.",
     "reviewed": true
   },
   {

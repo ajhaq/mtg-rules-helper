@@ -27,6 +27,8 @@ interface QuestionResult {
   must_cite_hit?: string[];
   must_cite_missed?: string[];
   unlisted_citations?: string[];
+  /** Cited "rules" that aren't in the Comprehensive Rules at all; users would see them as NOT FOUND. */
+  nonexistent_citations?: string[];
   citation_warnings?: string[];
   grade?: Grade;
   answer?: AnswerResult["answer"];
@@ -63,15 +65,17 @@ async function runQuestion(q: EvalQuestion, client: Anthropic): Promise<Question
     const coverage = citationCoverage(q.must_cite, cited);
     const { grade, usage: graderUsage } = await gradeAnswer(q, result.answer, client);
     const statusOk = result.answer.status === q.expected_status;
+    const nonexistent = result.citations.filter((c) => !c.exists).map((c) => c.rule_number);
 
     return {
       ...base,
-      pass: statusOk && coverage.missed.length === 0 && grade.verdict === "correct",
+      pass: statusOk && coverage.missed.length === 0 && nonexistent.length === 0 && grade.verdict === "correct",
       actual_status: result.answer.status,
       status_ok: statusOk,
       must_cite_hit: coverage.hit,
       must_cite_missed: coverage.missed,
       unlisted_citations: unlistedCitations(q.must_cite, q.may_cite, cited),
+      nonexistent_citations: nonexistent,
       citation_warnings: result.warnings,
       grade,
       answer: result.answer,
@@ -109,6 +113,7 @@ function printFailure(r: QuestionResult) {
   }
   if (!r.status_ok) console.log(`  status: expected ${r.expected_status}, got ${r.actual_status}`);
   if (r.must_cite_missed?.length) console.log(`  did not cite: ${r.must_cite_missed.join(", ")}`);
+  if (r.nonexistent_citations?.length) console.log(`  cited rules that don't exist: ${r.nonexistent_citations.join(", ")}`);
   if (r.grade && r.grade.verdict !== "correct") {
     console.log(`  grade: ${r.grade.verdict} - ${r.grade.reasoning}`);
     for (const m of r.grade.missed_points) console.log(`    missed: ${m}`);

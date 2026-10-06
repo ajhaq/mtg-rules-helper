@@ -15,7 +15,9 @@ export const AnswerSchema = z.object({
         explanation: z.string().describe("One step of the resolution, in plain language."),
         rules: z
           .array(z.string())
-          .describe("Comprehensive Rules numbers supporting this step, e.g. '603.2a'. Only numbers retrieved via tools."),
+          .describe(
+            "Comprehensive Rules numbers supporting this step, e.g. '603.2a'. Only numbers retrieved via tools. Never put card rulings, dates or card names here; those go in card_rulings_used."
+          ),
       })
     )
     .describe("Step-by-step resolution in the order things happen in the game. Empty unless status is 'answered'."),
