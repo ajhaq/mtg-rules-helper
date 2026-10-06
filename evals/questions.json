@@ -1,0 +1,151 @@
+[
+  {
+    "id": "obeka-stack-and-response",
+    "question": "Does Obeka, Brute Chronologist's ability go on the stack and can it be responded to?",
+    "cards": [
+      "Obeka, Brute Chronologist"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "Yes to both. It is an activated ability that is not a mana ability, so it is put on the stack when activated and the activator gets priority afterward; other players can respond before it resolves. When it resolves, the player whose turn it is (not necessarily Obeka's controller) may choose to end the turn, which follows the special procedure in 724.1.",
+    "must_cite": [
+      "602.2",
+      "117.3c",
+      "724.1"
+    ],
+    "may_cite": [
+      "602.2a",
+      "117.4",
+      "605.1a",
+      "724.1b"
+    ],
+    "notes": "Tests that the answer notices 'the player whose turn it is' decides, and that ending the turn exiles the stack including the resolving ability. Draft expectations: not yet reviewed.",
+    "reviewed": false
+  },
+  {
+    "id": "princess-yue-clever-impersonator",
+    "question": "What happens when you clone Princess Yue with a card like Clever Impersonator?",
+    "cards": [
+      "Princess Yue",
+      "Clever Impersonator"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "Clever Impersonator enters as a copy of Princess Yue, so you control two legendary permanents named Princess Yue and the legend rule makes you choose one and put the other into the graveyard. If the Clever Impersonator copy goes to the graveyard, it dies and Princess Yue's trigger returns that card (Clever Impersonator) to the battlefield tapped as a land named Moon with '{T}: Add {C}'. As it re-enters, its 'may enter as a copy of any nonland permanent' replacement effect applies again, so you may copy another nonland permanent; the result has the copied permanent's abilities but is a land named Moon that can tap for colorless. (If you instead put the original Princess Yue into the graveyard, she returns as Moon and the Clever Impersonator copy stays on the battlefield as a creature.)",
+    "must_cite": [
+      "704.5j",
+      "707.2",
+      "614.12"
+    ],
+    "may_cite": [
+      "613.2a",
+      "614.1c",
+      "614.12a",
+      "700.4",
+      "603.4",
+      "603.6c",
+      "603.10a",
+      "400.7",
+      "611.2c"
+    ],
+    "notes": "Answer supplied by the user; wording adjusted by Claude in two places, please confirm: (1) the legend rule puts permanents into the graveyard, it does not sacrifice them (704.5j). (2) Clever Impersonator's copy choice is a replacement effect (614.1c, choice made before entering per 614.12a), not an enters-the-battlefield trigger. Not located in the CR text: an explicit rule for which layer a 'named Moon' name-setting effect applies in relative to the copy effect (layer 1a, 613.2a), so the 'name will be Moon on the copy' detail rests on your reasoning or a ruling, not a rule I could cite.",
+    "reviewed": false
+  },
+  {
+    "id": "spell-cast-from-exile-destination",
+    "question": "When a non-permanent spell is resolved after being cast from exile, where does the card go?",
+    "cards": [],
+    "expected_status": "answered",
+    "expected_answer": "It goes to its owner's graveyard as the final part of its resolution (608.2n). Where the spell was cast from doesn't change this, and it is the owner's graveyard even if someone else cast it. The exception is an effect that specifically says otherwise. For example, a rebound spell is exiled instead of going to the graveyard only if it was cast from hand (702.88a), so when you cast it from exile on the next upkeep it goes to the graveyard.",
+    "must_cite": [
+      "608.2n"
+    ],
+    "may_cite": [
+      "601.2a",
+      "702.88a"
+    ],
+    "notes": "Rewritten from a broader question. Checks that the answer states the owner's graveyard and does not invent an exile or battlefield destination just because the card was cast from exile. Rebound is the natural counter-example: rebound only applies to spells cast from hand. An earlier draft wrongly used flashback as the exception, but flashback casts from the graveyard, so it isn't relevant. Draft expectations: not yet reviewed.",
+    "reviewed": false
+  },
+  {
+    "id": "humility-anikthea-token",
+    "question": "What happens when Humility is returned as a creature with Anikthea, Hand of Erebos?",
+    "cards": [
+      "Anikthea, Hand of Erebos",
+      "Humility"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "Anikthea's trigger creates a token copy of Humility that is also a 3/3 black Zombie creature. Humility's effect then applies to every creature, including its own token copy and Anikthea: in layer 6 they all lose all abilities, and in layer 7b they all have base power and toughness 1/1, overriding the token's copied 3/3. Humility losing its own ability doesn't stop the effect: once an effect has started to apply in one layer it keeps applying to the same objects in the other layers even if the ability generating it is removed (613.6). So the token and every other creature, Anikthea included, are 1/1 with no abilities.",
+    "must_cite": [
+      "613.6",
+      "613.1f",
+      "613.4b"
+    ],
+    "may_cite": [
+      "613.2a",
+      "707.9",
+      "613.7",
+      "113.7a"
+    ],
+    "notes": "Answer supplied by the user; supporting rules found by Claude in the CR text. The Humility rulings dated 2009-10-01 describe the same 'keeps applying after the ability is lost' principle using Opalescence. Unlike those cases, no timestamp or dependency is needed here because the 3/3 is a copiable value set in layer 1 (see the 2023-07-28 Anikthea ruling), and Humility's effects apply in later layers. Details added by Claude, please confirm: the token stays a black Zombie enchantment creature (Humility doesn't change types or colors), Anikthea herself loses menace and her triggers, and the trigger that already created the token is unaffected because a triggered ability on the stack exists independently of its source (113.7a).",
+    "reviewed": false
+  },
+  {
+    "id": "season-of-the-witch-silent-arbiter",
+    "question": "Which creatures are destroyed at the end step when both Silent Arbiter and Season of the Witch are in play?",
+    "cards": [
+      "Season of the Witch",
+      "Silent Arbiter"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "Season of the Witch destroys every untapped creature that didn't attack this turn, except creatures that couldn't attack. Silent Arbiter only limits how many creatures can be declared as attackers together; it doesn't stop any individual creature from being the one declared. So every untapped creature the active player controls that could have attacked (it has haste or has been controlled continuously since the turn began) is destroyed unless it was the single creature that attacked. That includes Silent Arbiter itself if it didn't attack. Creatures with summoning sickness, tapped creatures, and creatures controlled by players other than the active player (which couldn't attack this turn) are not destroyed.",
+    "must_cite": [
+      "508.1a",
+      "508.1c"
+    ],
+    "may_cite": [
+      "302.6",
+      "603.2"
+    ],
+    "notes": "Answer supplied by the user; Claude added three refinements, please confirm: (1) only the active player's creatures could have attacked, so other players' creatures survive; (2) tapped creatures survive because the card says untapped; (3) Silent Arbiter is itself a creature and is destroyed if it didn't attack. Key card ruling the answer should use: Season of the Witch 2013-09-20 ('every creature that could have been declared as an attacker ... but wasn't will be destroyed' and a summoning-sick creature isn't destroyed). Neither a rule nor a ruling addresses this exact pairing. The conclusion is an inference: 508.1c treats restrictions as checks on the whole declaration (its example is 'can't attack alone', where declaring both is legal), so Silent Arbiter's limit doesn't make any one creature unable to attack, only unable to attack together with another. If you have an official source for this pairing, add it.",
+    "reviewed": false
+  },
+  {
+    "id": "golgari-grave-troll-reanimate",
+    "question": "If Golgari Grave-Troll is the only creature in your graveyard when you cast Reanimate on it, how many +1/+1 counters will it enter with?",
+    "cards": [
+      "Golgari Grave-Troll",
+      "Reanimate"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "One counter. Golgari Grave-Troll's 'enters with a +1/+1 counter for each creature card in your graveyard' is a replacement effect (614.1c) that applies as it enters the battlefield, while the Troll is still in the graveyard, so it counts itself (official ruling, 2018-12-07). The count is determined when the effect is applied, as Reanimate resolves, not when Reanimate was cast (608.2h, 614.1). If another creature card were put into your graveyard in response to Reanimate, the Troll would enter with 2 counters.",
+    "must_cite": [
+      "614.1c"
+    ],
+    "may_cite": [
+      "614.1",
+      "614.12",
+      "608.2h"
+    ],
+    "notes": "The number (1) was supplied by the user, but the user's reasoning was 'last known information before Reanimate was cast'. That is not the mechanism: last known information is only used for an object that has already left its zone (608.2h), and the Troll hasn't left the graveyard yet when the replacement effect applies; the count isn't locked in at cast time. The answer should NOT credit last known information or cast time. Key card ruling the answer should use: Golgari Grave-Troll 2018-12-07 ('If you return Golgari Grave-Troll from your graveyard directly to the battlefield, its first ability counts itself.'). Not located: a single CR rule that states the card is still in the graveyard at the moment 'enters with' is evaluated; the 'another creature card in response' sentence is my inference from 614.1 and 608.2h, please confirm or remove. Question text fixed from 'careature' to 'creature'.",
+    "reviewed": false
+  },
+  {
+    "id": "crag-puca-reckless-charge-switch",
+    "question": "If you cast Reckless Charge on Crag Puca, then activate Crag Puca's ability to switch its power and toughness, what will be the resulting power/toughness of Crag Puca?",
+    "cards": [
+      "Crag Puca",
+      "Reckless Charge"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "4/5. Crag Puca is a 2/4. Reckless Charge's +3/+0 applies in layer 7c, making it 5/4. Effects that switch power and toughness apply afterward in layer 7d, so the switch takes the 5/4 and makes it 4/5. The switch always applies after every other power/toughness effect regardless of which happened first, so activating the ability before casting Reckless Charge gives the same result.",
+    "must_cite": [
+      "613.4c",
+      "613.4d"
+    ],
+    "may_cite": [
+      "613.4",
+      "613.1g"
+    ],
+    "notes": "Answer supplied by the user. The question doesn't give Crag Puca's base stats, so the app has to look them up (2/4, from Scryfall). Writing this entry exposed a real gap: the cards table didn't store power/toughness/loyalty/defense, so lookup_card couldn't have returned them. Fixed in the same change (new columns, re-ingest, lookup_card output). Key card ruling the answer can use: Crag Puca 2021-03-19 ('Effects that switch a creature's power and toughness apply after all other effects, regardless of when those effects began to apply').",
+    "reviewed": false
+  }
+]
