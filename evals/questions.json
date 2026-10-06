@@ -147,5 +147,77 @@
     ],
     "notes": "Answer supplied by the user. The question doesn't give Crag Puca's base stats, so the app has to look them up (2/4, from Scryfall). Writing this entry exposed a real gap: the cards table didn't store power/toughness/loyalty/defense, so lookup_card couldn't have returned them. Fixed in the same change (new columns, re-ingest, lookup_card output). Key card ruling the answer can use: Crag Puca 2021-03-19 ('Effects that switch a creature's power and toughness apply after all other effects, regardless of when those effects began to apply').",
     "reviewed": false
+  },
+  {
+    "id": "underworld-breach-fierce-guardianship-alt-costs",
+    "question": "If I have Underworld Breach and my commander in play, can I escape Fierce Guardianship from my graveyard by exiling 3 cards and not paying its mana cost?",
+    "cards": [
+      "Underworld Breach",
+      "Fierce Guardianship"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "No. Underworld Breach gives Fierce Guardianship escape while it's in your graveyard, and casting it from the graveyard is only possible through that escape permission. Escape means you cast the card by paying its escape cost rather than its mana cost (702.138a), so it is an alternative cost. Fierce Guardianship's 'you may cast this spell without paying its mana cost' is also an alternative cost (118.9). Only one alternative cost can be applied to a spell as it's cast (118.9a, 601.2b), so you can't combine them. You can still escape it, but you pay the escape cost: its normal mana cost ({2}{U}) plus exiling three other cards from your graveyard. Controlling a commander doesn't make the mana part free in that case.",
+    "must_cite": [
+      "118.9a",
+      "702.138a",
+      "118.9"
+    ],
+    "may_cite": [
+      "601.2b",
+      "601.2f",
+      "118.9d",
+      "118.6a"
+    ],
+    "notes": "Answer supplied by the user; rules found by Claude. The answer is correct. Details added by Claude, please confirm: (1) the point that Fierce Guardianship's own text gives no permission to cast it from the graveyard, so escape is the only way it can be cast from there. This is why you can't just cast it for free. (2) the escape cost under Underworld Breach is the card's mana cost plus exiling three other cards, so 'exiling 3 cards and not paying its mana cost' misreads the cost (the mana cost is still paid). Key card rulings the answer can use: Underworld Breach 2020-01-24 ('If you cast a spell with its escape permission, you can't choose to apply any other alternative costs or to cast it without paying its mana cost') and Fierce Guardianship 2020-04-17 (any commander counts). Question wording lightly edited for clarity.",
+    "reviewed": false
+  },
+  {
+    "id": "urzas-saga-blood-moon-chapter-2",
+    "question": "What happens to Urza's Saga on chapter 2 when someone plays Blood Moon? Assume Blood Moon arrives after the chapter II ability has already resolved.",
+    "cards": [
+      "Urza's Saga",
+      "Blood Moon"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "Blood Moon makes Urza's Saga a Mountain, a type-changing effect that applies in layer 4 (613.1d). Because the effect sets its land type to a basic land type, the land loses its old land type (Urza's) and all abilities generated from its rules text, which includes its chapter abilities, and it gains '{T}: Add {R}' (305.7). With no chapter abilities, the Saga stops receiving lore counters (714.3c) and the sacrifice state-based action no longer applies, since it only checks a Saga with one or more chapter abilities (704.5s). So it is not sacrificed after chapter III and stays on the battlefield as an enchantment land Mountain. It keeps the abilities it was granted by chapter abilities that already resolved: 305.7 says setting a land's subtype doesn't remove abilities granted by other effects, and those ability-adding effects apply in layer 6 (613.1f), after Blood Moon's layer 4 effect. Per the official Urza's Saga ruling, it keeps them for as long as it's on the battlefield. That means it keeps both '{T}: Add {C}' from chapter I and '{2}, {T}: Create a Construct' from chapter II, in addition to the Mountain's '{T}: Add {R}'.",
+    "must_cite": [
+      "305.7",
+      "613.1d",
+      "613.1f",
+      "704.5s"
+    ],
+    "may_cite": [
+      "714.3c",
+      "505.4",
+      "714.4",
+      "714.2b",
+      "113.7a"
+    ],
+    "notes": "Answer supplied by the user; Claude added or changed several things, please confirm: (1) the rule that actually protects the granted abilities is 305.7 ('this doesn't remove any abilities that were granted to the land by other effects'). The layer ordering (layer 4 then layer 6) is consistent with it, but a different-layer argument alone isn't the stated reason. Your must_cite of 613.1d and 613.1f is kept, with 305.7 and 704.5s added. (2) 'Loses the ability to add lore counters' is true in effect, but the counter is added by a turn-based action (714.3c), not by a Saga ability. It simply doesn't apply to a Saga without chapter abilities. (3) Timing is fixed by the user: Blood Moon arrives after chapter II has already resolved, so both granted abilities are kept. Other timings would give different results (Blood Moon in play before the lore counter is added means chapter II never triggers; Blood Moon while chapter II's trigger is on the stack still lets the trigger resolve independently of its source, 113.7a), but they are not what this question asks. (4) Saga is an enchantment subtype, so I assume it stays an Enchantment Land, but I could not locate a rule that says so in as many words. Not mentioned in the CR: whether it's still a 'Saga' for other effects. Key card rulings the answer can use: Urza's Saga 2021-06-18 ('keeps those abilities for as long as it's on the battlefield') and Blood Moon 2020-08-07 ('Nonbasic lands will lose any other land types and abilities they had').",
+    "reviewed": false
+  },
+  {
+    "id": "dryad-ilysian-grove-curious-colossus",
+    "question": "If I have Dryad of the Ilysian Grove in play, and one of my opponents plays Curious Colossus targeting me, does the Dryad stop applying its \"Lands you control are every basic land type in addition to their other types\" effect?",
+    "cards": [
+      "Dryad of the Ilysian Grove",
+      "Curious Colossus"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "No, your lands stay every basic land type. Curious Colossus's enters trigger makes each creature the targeted player controls lose all abilities, which includes the Dryad, and become a 1/1 Coward. But the Dryad's land-type effect is a type-changing effect applied in layer 4 (613.1d), and the ability removal is applied later in layer 6 (613.1f). Layers are applied in order (613.1), so the Dryad's effect has already been applied by the time it loses its abilities, and removing the ability in layer 6 doesn't undo it. The lands keep the added land types and the matching mana abilities. The Dryad's other ability, 'You may play an additional land on each of your turns', does stop working, because the Dryad no longer has that ability.",
+    "must_cite": [
+      "613.1d",
+      "613.1f"
+    ],
+    "may_cite": [
+      "613.1",
+      "613.5",
+      "613.6",
+      "611.2c",
+      "611.3",
+      "305.7"
+    ],
+    "notes": "Answer supplied by the user, with must_cite 613.6. The conclusion (No) is right, but I think 613.6 is not the rule that gets you there, so I moved it to may_cite and made 613.1d and 613.1f the must_cite. Please confirm or tell me to put 613.6 back. Reasoning: 613.6 covers one effect that has parts in more than one layer (its examples are 'becomes the color of your choice and gets +1/+1' and Act of Treason's control change plus haste). It says the later parts keep applying to the same objects even if the ability generating the effect is removed. The Dryad's land-type effect only has one part, in layer 4, so there's no later layer for 613.6 to carry it into. What protects it is the layer order: layer 4 is applied before layer 6, so the Dryad still has the ability when layer 4 is applied. I could not find a CR rule that says this in so many words, only the layer list (613.1) and 613.5, so the 'removing the ability doesn't undo earlier layers' sentence is an inference from the order of the layers. Details added by Claude, please confirm: (1) the question now says Colossus targets you, since its trigger only affects creatures controlled by the target opponent (611.2c). Without that the Dryad isn't affected at all. (2) The Dryad's additional-land-play ability does stop working, as noted in the answer. The Colossus rulings include 2025-11-17 ('effects last indefinitely'). Neither card's rulings address this exact pairing.",
+    "reviewed": false
   }
 ]
