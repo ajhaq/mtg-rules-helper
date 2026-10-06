@@ -19,7 +19,7 @@
       "724.1b"
     ],
     "notes": "Tests that the answer notices 'the player whose turn it is' decides, and that ending the turn exiles the stack including the resolving ability. Draft expectations: not yet reviewed.",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "princess-yue-clever-impersonator",
@@ -47,7 +47,7 @@
       "611.2c"
     ],
     "notes": "Answer supplied by the user; wording adjusted by Claude in two places, please confirm: (1) the legend rule puts permanents into the graveyard, it does not sacrifice them (704.5j). (2) Clever Impersonator's copy choice is a replacement effect (614.1c, choice made before entering per 614.12a), not an enters-the-battlefield trigger. Not located in the CR text: an explicit rule for which layer a 'named Moon' name-setting effect applies in relative to the copy effect (layer 1a, 613.2a), so the 'name will be Moon on the copy' detail rests on your reasoning or a ruling, not a rule I could cite.",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "spell-cast-from-exile-destination",
@@ -63,7 +63,7 @@
       "702.88a"
     ],
     "notes": "Rewritten from a broader question. Checks that the answer states the owner's graveyard and does not invent an exile or battlefield destination just because the card was cast from exile. Rebound is the natural counter-example: rebound only applies to spells cast from hand. An earlier draft wrongly used flashback as the exception, but flashback casts from the graveyard, so it isn't relevant. Draft expectations: not yet reviewed.",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "humility-anikthea-token",
@@ -86,7 +86,7 @@
       "113.7a"
     ],
     "notes": "Answer supplied by the user; supporting rules found by Claude in the CR text. The Humility rulings dated 2009-10-01 describe the same 'keeps applying after the ability is lost' principle using Opalescence. Unlike those cases, no timestamp or dependency is needed here because the 3/3 is a copiable value set in layer 1 (see the 2023-07-28 Anikthea ruling), and Humility's effects apply in later layers. Details added by Claude, please confirm: the token stays a black Zombie enchantment creature (Humility doesn't change types or colors), Anikthea herself loses menace and her triggers, and the trigger that already created the token is unaffected because a triggered ability on the stack exists independently of its source (113.7a).",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "season-of-the-witch-silent-arbiter",
@@ -106,7 +106,7 @@
       "603.2"
     ],
     "notes": "Answer supplied by the user; Claude added three refinements, please confirm: (1) only the active player's creatures could have attacked, so other players' creatures survive; (2) tapped creatures survive because the card says untapped; (3) Silent Arbiter is itself a creature and is destroyed if it didn't attack. Key card ruling the answer should use: Season of the Witch 2013-09-20 ('every creature that could have been declared as an attacker ... but wasn't will be destroyed' and a summoning-sick creature isn't destroyed). Neither a rule nor a ruling addresses this exact pairing. The conclusion is an inference: 508.1c treats restrictions as checks on the whole declaration (its example is 'can't attack alone', where declaring both is legal), so Silent Arbiter's limit doesn't make any one creature unable to attack, only unable to attack together with another. If you have an official source for this pairing, add it.",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "golgari-grave-troll-reanimate",
@@ -126,7 +126,7 @@
       "608.2h"
     ],
     "notes": "The number (1) was supplied by the user, but the user's reasoning was 'last known information before Reanimate was cast'. That is not the mechanism: last known information is only used for an object that has already left its zone (608.2h), and the Troll hasn't left the graveyard yet when the replacement effect applies; the count isn't locked in at cast time. The answer should NOT credit last known information or cast time. Key card ruling the answer should use: Golgari Grave-Troll 2018-12-07 ('If you return Golgari Grave-Troll from your graveyard directly to the battlefield, its first ability counts itself.'). Not located: a single CR rule that states the card is still in the graveyard at the moment 'enters with' is evaluated; the 'another creature card in response' sentence is my inference from 614.1 and 608.2h, please confirm or remove. Question text fixed from 'careature' to 'creature'.",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "crag-puca-reckless-charge-switch",
@@ -146,7 +146,7 @@
       "613.1g"
     ],
     "notes": "Answer supplied by the user. The question doesn't give Crag Puca's base stats, so the app has to look them up (2/4, from Scryfall). Writing this entry exposed a real gap: the cards table didn't store power/toughness/loyalty/defense, so lookup_card couldn't have returned them. Fixed in the same change (new columns, re-ingest, lookup_card output). Key card ruling the answer can use: Crag Puca 2021-03-19 ('Effects that switch a creature's power and toughness apply after all other effects, regardless of when those effects began to apply').",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "underworld-breach-fierce-guardianship-alt-costs",
@@ -169,7 +169,7 @@
       "118.6a"
     ],
     "notes": "Answer supplied by the user; rules found by Claude. The answer is correct. Details added by Claude, please confirm: (1) the point that Fierce Guardianship's own text gives no permission to cast it from the graveyard, so escape is the only way it can be cast from there. This is why you can't just cast it for free. (2) the escape cost under Underworld Breach is the card's mana cost plus exiling three other cards, so 'exiling 3 cards and not paying its mana cost' misreads the cost (the mana cost is still paid). Key card rulings the answer can use: Underworld Breach 2020-01-24 ('If you cast a spell with its escape permission, you can't choose to apply any other alternative costs or to cast it without paying its mana cost') and Fierce Guardianship 2020-04-17 (any commander counts). Question wording lightly edited for clarity.",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "urzas-saga-blood-moon-chapter-2",
@@ -194,7 +194,7 @@
       "113.7a"
     ],
     "notes": "Answer supplied by the user; Claude added or changed several things, please confirm: (1) the rule that actually protects the granted abilities is 305.7 ('this doesn't remove any abilities that were granted to the land by other effects'). The layer ordering (layer 4 then layer 6) is consistent with it, but a different-layer argument alone isn't the stated reason. Your must_cite of 613.1d and 613.1f is kept, with 305.7 and 704.5s added. (2) 'Loses the ability to add lore counters' is true in effect, but the counter is added by a turn-based action (714.3c), not by a Saga ability. It simply doesn't apply to a Saga without chapter abilities. (3) Timing is fixed by the user: Blood Moon arrives after chapter II has already resolved, so both granted abilities are kept. Other timings would give different results (Blood Moon in play before the lore counter is added means chapter II never triggers; Blood Moon while chapter II's trigger is on the stack still lets the trigger resolve independently of its source, 113.7a), but they are not what this question asks. (4) Saga is an enchantment subtype, so I assume it stays an Enchantment Land, but I could not locate a rule that says so in as many words. Not mentioned in the CR: whether it's still a 'Saga' for other effects. Key card rulings the answer can use: Urza's Saga 2021-06-18 ('keeps those abilities for as long as it's on the battlefield') and Blood Moon 2020-08-07 ('Nonbasic lands will lose any other land types and abilities they had').",
-    "reviewed": false
+    "reviewed": true
   },
   {
     "id": "dryad-ilysian-grove-curious-colossus",
@@ -218,6 +218,6 @@
       "305.7"
     ],
     "notes": "Answer supplied by the user, with must_cite 613.6. The conclusion (No) is right, but I think 613.6 is not the rule that gets you there, so I moved it to may_cite and made 613.1d and 613.1f the must_cite. Please confirm or tell me to put 613.6 back. Reasoning: 613.6 covers one effect that has parts in more than one layer (its examples are 'becomes the color of your choice and gets +1/+1' and Act of Treason's control change plus haste). It says the later parts keep applying to the same objects even if the ability generating the effect is removed. The Dryad's land-type effect only has one part, in layer 4, so there's no later layer for 613.6 to carry it into. What protects it is the layer order: layer 4 is applied before layer 6, so the Dryad still has the ability when layer 4 is applied. I could not find a CR rule that says this in so many words, only the layer list (613.1) and 613.5, so the 'removing the ability doesn't undo earlier layers' sentence is an inference from the order of the layers. Details added by Claude, please confirm: (1) the question now says Colossus targets you, since its trigger only affects creatures controlled by the target opponent (611.2c). Without that the Dryad isn't affected at all. (2) The Dryad's additional-land-play ability does stop working, as noted in the answer. The Colossus rulings include 2025-11-17 ('effects last indefinitely'). Neither card's rulings address this exact pairing.",
-    "reviewed": false
+    "reviewed": true
   }
 ]
