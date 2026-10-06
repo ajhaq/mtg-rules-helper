@@ -52,7 +52,7 @@ async function main() {
 
   const u = result.usage;
   console.log(
-    `\n(${result.model}, ${result.iterations} requests, ${u.input_tokens} in / ${u.output_tokens} out, ${u.cache_read_input_tokens} cached)`
+    `\n(${result.model}, ${result.iterations} requests; input: ${u.input_tokens} uncached + ${u.cache_creation_input_tokens} cache-write + ${u.cache_read_input_tokens} cache-read; output: ${u.output_tokens})`
   );
 }
 

@@ -16,7 +16,12 @@ export interface AnswerResult extends VerifiedAnswer {
   model: string;
   /** Number of API requests in the tool loop. */
   iterations: number;
-  usage: { input_tokens: number; output_tokens: number; cache_read_input_tokens: number };
+  usage: {
+    input_tokens: number;
+    output_tokens: number;
+    cache_creation_input_tokens: number;
+    cache_read_input_tokens: number;
+  };
 }
 
 export async function answerQuestion(question: string, client: Anthropic = new Anthropic()): Promise<AnswerResult> {
@@ -38,12 +43,13 @@ export async function answerQuestion(question: string, client: Anthropic = new A
 
   let final: Anthropic.Beta.BetaMessage | undefined;
   let iterations = 0;
-  const usage = { input_tokens: 0, output_tokens: 0, cache_read_input_tokens: 0 };
+  const usage = { input_tokens: 0, output_tokens: 0, cache_creation_input_tokens: 0, cache_read_input_tokens: 0 };
   for await (const message of runner) {
     final = message;
     iterations++;
     usage.input_tokens += message.usage.input_tokens;
     usage.output_tokens += message.usage.output_tokens;
+    usage.cache_creation_input_tokens += message.usage.cache_creation_input_tokens ?? 0;
     usage.cache_read_input_tokens += message.usage.cache_read_input_tokens ?? 0;
   }
 
