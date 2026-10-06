@@ -8,7 +8,7 @@ import { SYSTEM_PROMPT } from "./prompt.js";
 import { AnswerSchema } from "./schema.js";
 import { createToolContext, createTools } from "./tools.js";
 
-const MODEL = process.env.MTG_RULES_MODEL ?? "claude-opus-5-5";
+const MODEL = process.env.MTG_RULES_MODEL ?? "claude-sonnet-5-5";
 const MAX_ITERATIONS = 12;
 
 export interface AnswerResult extends VerifiedAnswer {
