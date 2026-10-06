@@ -1,0 +1,43 @@
+Introduction
+
+This fixture is a small SYNTHETIC stand-in for the real Comprehensive Rules,
+used only to exercise the parser in tests and the smoke test. It does not
+reproduce official Wizards of the Coast rules text. Replace this file with a
+real download from magic.wizards.com/en/rules for actual use.
+
+1. Game Concepts
+
+100. General
+
+100.1. This is a synthetic fixture rule used only to test the parser. It does
+not reproduce official Comprehensive Rules text.
+
+100.1a This is a synthetic subrule used to test lettered-subrule parsing.
+
+100.2. Another synthetic top-level rule, used to test multi-rule parsing
+within a single section.
+
+5. Turn Structure
+
+509. Combat Damage Step
+
+509.1. A synthetic placeholder describing how combat damage assignment order
+would work, for parser-testing purposes only.
+
+509.1a A synthetic subrule about first strike ordering, for testing purposes
+only.
+
+509.1b A synthetic subrule about simultaneous damage, for testing purposes
+only.
+
+Glossary
+
+Widget
+A synthetic glossary term used only to test the glossary parser.
+
+Gadget
+Another synthetic glossary term used only for parser testing.
+
+Credits
+
+Synthetic fixture credits, not part of the real Comprehensive Rules.

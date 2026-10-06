@@ -1,0 +1,99 @@
+# mtg-rules-helper
+
+Ingestion and retrieval layer for an MTG rules-question tool. Scope is
+deliberately narrow: **resolve "does this trigger / what happens" rules
+questions using citations from the Comprehensive Rules and official card
+rulings.** No tournament policy (MTR/IPG), no procedural questions.
+
+This repo only covers data ingestion + retrieval. There is no chat UI or LLM
+synthesis layer yet — see "Next steps" below.
+
+Requires **Node 22.5+** (uses the built-in `node:sqlite` module — no native
+compiler toolchain needed, unlike `better-sqlite3`).
+
+## What's here
+
+- `src/db` — SQLite schema (Node's built-in `node:sqlite`) with an FTS5 table
+  for keyword search over rule text.
+- `src/ingest` — pulls card Oracle text + rulings from Scryfall's bulk data
+  API, and parses the Comprehensive Rules `.txt` into one row per numbered
+  (sub)rule (e.g. `509.1a`), plus a best-effort glossary parse.
+- `src/embeddings` — pluggable embedding provider. Ships with a local
+  provider (`@xenova/transformers`, all-MiniLM-L6-v2) so retrieval works
+  fully offline with no API key.
+- `src/retrieval` — card name resolution (exact → substring → fuzzy
+  Levenshtein), rulings lookup, and hybrid rules search (BM25 keyword +
+  embedding cosine similarity, merged and re-ranked).
+
+## Setup
+
+```bash
+npm install
+```
+
+### 1. Ingest card data (from Scryfall, automatic)
+
+```bash
+npm run ingest:cards
+```
+
+Downloads Scryfall's `oracle_cards` and `rulings` bulk data files and loads
+them into `data/rules.sqlite`. No API key needed; be considerate of
+Scryfall's servers (bulk data is meant to be downloaded infrequently, not
+polled).
+
+### 2. Ingest the Comprehensive Rules (manual download required)
+
+The official rules text is republished every set release at a URL that
+changes each time, so it isn't hardcoded here. Get the current `.txt` from
+**magic.wizards.com/en/rules** ("Comprehensive Rules" download), then:
+
+```bash
+npm run ingest:rules -- /path/to/MagicCompRules.txt
+```
+
+### 3. Generate embeddings for semantic search
+
+```bash
+npm run ingest:embeddings
+```
+
+Downloads a small (~90MB) local embedding model on first run and caches it.
+
+### Try it
+
+```bash
+npm run query -- "does regeneration stop a creature from being sacrificed"
+npm run query -- --card "Fog Bank"
+```
+
+### Smoke test (no network dependency on Scryfall or a real CR download)
+
+```bash
+npm run smoke-test
+```
+
+Uses fixture data (`data/fixtures/comp-rules-fixture.txt`, a synthetic
+stand-in for the real rules text) to validate the parser and both search
+paths end to end. Still downloads the local embedding model on first run.
+
+## Design notes
+
+- **Hybrid search matters.** Keyword/BM25 catches exact terminology
+  ("regenerate", "state-based"); embeddings catch paraphrased questions. Both
+  are merged and re-ranked rather than picking one.
+- **Full re-ingest, not incremental.** Rule numbers get reshuffled between CR
+  releases and the rulings bulk file is a full snapshot each time, so both
+  ingestion paths clear and reload their tables rather than diffing.
+- **The glossary parser is a heuristic** (short unpunctuated line = term,
+  everything after = definition) and hasn't been validated against the full
+  real CR file — sanity-check the `glossary` table after a real ingest.
+- **No tournament policy data at all**, by design — see the scope note above.
+
+## Next steps (not in this repo yet)
+
+- LLM synthesis layer: given a question, resolve cards + relevant rules via
+  this retrieval layer, then have Claude produce a short answer + step-by-step
+  resolution + citations, refusing anything that's actually a policy question.
+- An eval set of known rules-interaction Q&A pairs to test synthesis quality.
+- A minimal chat UI.

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+data/*.sqlite
+data/*.sqlite-*
+data/bulk/
+data/comp-rules.txt
+*.log
+.env
