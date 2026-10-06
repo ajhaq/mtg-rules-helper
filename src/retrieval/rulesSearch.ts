@@ -15,6 +15,14 @@ export function getRuleByNumber(ruleNumber: string): RuleRecord | undefined {
     | undefined;
 }
 
+/** A rule plus its lettered subrules, e.g. "603.10" -> 603.10, 603.10a, 603.10b... in document order. */
+export function getRuleWithSubrules(ruleNumber: string): RuleRecord[] {
+  const db = getDb();
+  return db
+    .prepare(`SELECT * FROM rules WHERE rule_number = ? OR rule_number GLOB ? ORDER BY id`)
+    .all(ruleNumber, `${ruleNumber}[a-z]`) as unknown as RuleRecord[];
+}
+
 function keywordSearch(query: string, limit: number): Map<number, number> {
   const db = getDb();
   // FTS5 needs quoted tokens to tolerate punctuation/keywords like "may" safely.

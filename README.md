@@ -1,12 +1,11 @@
 # mtg-rules-helper
 
-Ingestion and retrieval layer for an MTG rules-question tool. Scope is
+Ingestion, retrieval and Claude synthesis for an MTG rules-question tool. Scope is
 deliberately narrow: **resolve "does this trigger / what happens" rules
 questions using citations from the Comprehensive Rules and official card
 rulings.** No tournament policy (MTR/IPG), no procedural questions.
 
-This repo only covers data ingestion + retrieval. There is no chat UI or LLM
-synthesis layer yet — see "Next steps" below.
+There is no chat UI yet — see "Next steps" below.
 
 Requires **Node 22.5+** (uses the built-in `node:sqlite` module — no native
 compiler toolchain needed, unlike `better-sqlite3`).
@@ -23,7 +22,11 @@ compiler toolchain needed, unlike `better-sqlite3`).
   fully offline with no API key.
 - `src/retrieval` — card name resolution (exact → substring → fuzzy
   Levenshtein), rulings lookup, and hybrid rules search (BM25 keyword +
-  embedding cosine similarity, merged and re-ranked).
+  embedding cosine similarity, merged and re-ranked), plus exact rule lookup
+  with subrules.
+- `src/synthesis` — the Claude layer: a tool-calling loop (`search_rules`,
+  `get_rule`, `lookup_card`) that returns a structured answer, then verifies
+  every cited rule against the database.
 
 ## Setup
 
@@ -67,6 +70,31 @@ npm run query -- "does regeneration stop a creature from being sacrificed"
 npm run query -- --card "Fog Bank"
 ```
 
+### Ask a question (needs Claude credentials)
+
+```bash
+export ANTHROPIC_API_KEY=...
+npm run ask -- "If Blood Artist dies at the same time as another creature, does it trigger for that creature?"
+```
+
+Claude looks up the cards, searches and reads the relevant rules, and returns
+a short answer, step-by-step resolution and citations. Rule text shown under
+"Rules cited" comes from the database, not from the model, and any cited rule
+that doesn't exist (or that no tool actually showed the model) is listed under
+`CITATION WARNINGS`. The last line reports requests and tokens used so you can
+see what each question costs.
+
+Defaults to `claude-opus-5-5`; set `MTG_RULES_MODEL` to try another model.
+The request opts into server-side refusal fallbacks (`fallbacks: "default"`).
+
+### Unit tests
+
+```bash
+npm test
+```
+
+Covers citation verification (no database or API needed).
+
 ### Smoke test (no network dependency on Scryfall or a real CR download)
 
 ```bash
@@ -92,8 +120,5 @@ paths end to end. Still downloads the local embedding model on first run.
 
 ## Next steps (not in this repo yet)
 
-- LLM synthesis layer: given a question, resolve cards + relevant rules via
-  this retrieval layer, then have Claude produce a short answer + step-by-step
-  resolution + citations, refusing anything that's actually a policy question.
 - An eval set of known rules-interaction Q&A pairs to test synthesis quality.
 - A minimal chat UI.
