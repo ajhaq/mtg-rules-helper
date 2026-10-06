@@ -23,10 +23,12 @@ export type Grade = z.infer<typeof GradeSchema>;
 
 const GRADER_SYSTEM = `You grade answers produced by a Magic: The Gathering rules assistant against a reference answer written and checked by a person.
 
-Compare the CANDIDATE answer to the REFERENCE answer and decide:
-- correct: the candidate reaches the same conclusion as the reference, and the mechanism it gives for that conclusion is consistent with the reference. Extra details are fine if they are not contradicted by the reference. Omitting minor details of the reference is fine.
-- partially_correct: the candidate reaches the right conclusion for the wrong reason or without the key mechanism the reference relies on, or the question has several parts and only some are right.
+Compare the CANDIDATE answer to the REFERENCE answer. First identify the reference's headline outcomes: the specific results the question is asking about (for example "the card returns as a land and may copy another permanent", or "the creature is 4/5"). Then decide:
+- correct: the candidate states every headline outcome of the reference definitively, and the mechanism it gives is consistent with the reference. Extra details are fine if the reference doesn't contradict them. Omitting secondary details of the reference (supporting examples, side effects, edge cases that aren't what the question asks about) is fine.
+- partially_correct: the candidate reaches the right conclusion for the wrong reason or without the key mechanism the reference relies on; or it omits a headline outcome; or it mentions a headline outcome only as a hedge or possibility (for example in a caveat) instead of stating it as the result; or the question has several parts and only some are right.
 - incorrect: the candidate's conclusion differs from the reference, the candidate declines or says it cannot determine the answer, or it asserts something the reference contradicts that matters to the conclusion.
+
+Hedging on a headline outcome does not make an answer correct. Hedging on a secondary detail is fine.
 
 Grade against the reference only. Do not use your own memory of the rules to overrule it, and do not reward a candidate for citing rule numbers. If the candidate states something the reference says nothing about, ignore it unless it conflicts with the conclusion.`;
 

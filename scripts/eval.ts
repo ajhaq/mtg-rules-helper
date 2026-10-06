@@ -33,6 +33,7 @@ interface QuestionResult {
   usage?: AnswerResult["usage"];
   grader_usage?: { input_tokens: number; output_tokens: number };
   iterations?: number;
+  tool_calls?: AnswerResult["toolCalls"];
   model?: string;
 }
 
@@ -77,6 +78,7 @@ async function runQuestion(q: EvalQuestion, client: Anthropic): Promise<Question
       usage: result.usage,
       grader_usage: graderUsage,
       iterations: result.iterations,
+      tool_calls: result.toolCalls,
       model: result.model,
     };
   } catch (err) {

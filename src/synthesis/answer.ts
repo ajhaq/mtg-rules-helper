@@ -9,13 +9,15 @@ import { AnswerSchema } from "./schema.js";
 import { createToolContext, createTools } from "./tools.js";
 
 const MODEL = process.env.MTG_RULES_MODEL ?? "claude-sonnet-5-5";
-const MAX_ITERATIONS = 12;
+const MAX_ITERATIONS = 16;
 
 export interface AnswerResult extends VerifiedAnswer {
   /** The model that produced the final message (differs from the requested model if a refusal fallback ran). */
   model: string;
   /** Number of API requests in the tool loop. */
   iterations: number;
+  /** Tool calls the model made, in order. */
+  toolCalls: { tool: string; input: unknown }[];
   usage: {
     input_tokens: number;
     output_tokens: number;
@@ -47,6 +49,10 @@ export async function answerQuestion(question: string, client: Anthropic = new A
   for await (const message of runner) {
     final = message;
     iterations++;
+    // Out of tool budget: forbid tools on the last request so the model has to answer from what it has gathered.
+    if (iterations === MAX_ITERATIONS - 1 && message.stop_reason === "tool_use") {
+      runner.setMessagesParams((params) => ({ ...params, tool_choice: { type: "none" } }));
+    }
     usage.input_tokens += message.usage.input_tokens;
     usage.output_tokens += message.usage.output_tokens;
     usage.cache_creation_input_tokens += message.usage.cache_creation_input_tokens ?? 0;
@@ -83,5 +89,5 @@ export async function answerQuestion(question: string, client: Anthropic = new A
     },
   });
 
-  return { ...verified, model: final.model, iterations, usage };
+  return { ...verified, model: final.model, iterations, toolCalls: ctx.calls, usage };
 }

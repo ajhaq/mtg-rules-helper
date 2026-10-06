@@ -8,10 +8,12 @@ import type { RuleRecord } from "../types.js";
 export interface ToolContext {
   /** Every rule number shown to the model this run; used to verify citations afterwards. */
   retrievedRules: Set<string>;
+  /** Every tool call the model made this run, in order (for diagnosing runs that loop). */
+  calls: { tool: string; input: unknown }[];
 }
 
 export function createToolContext(): ToolContext {
-  return { retrievedRules: new Set() };
+  return { retrievedRules: new Set(), calls: [] };
 }
 
 function formatRules(ctx: ToolContext, rules: RuleRecord[]) {
@@ -33,6 +35,7 @@ export function createTools(ctx: ToolContext) {
       limit: z.number().int().min(1).max(20).optional().describe("Max results (default 10)"),
     }),
     run: async ({ query, limit }) => {
+      ctx.calls.push({ tool: "search_rules", input: { query, limit } });
       const results = await searchRules(query, { limit: limit ?? 10 });
       if (!results.length) return "No matching rules found.";
       return JSON.stringify(formatRules(ctx, results));
@@ -48,6 +51,7 @@ export function createTools(ctx: ToolContext) {
       rule_number: z.string().describe("e.g. '603.2', '704.5g', or '613.1a'"),
     }),
     run: async ({ rule_number }) => {
+      ctx.calls.push({ tool: "get_rule", input: { rule_number } });
       const rules = getRuleWithSubrules(rule_number.trim().replace(/\.$/, ""));
       if (!rules.length) {
         return `No rule numbered "${rule_number}". Use search_rules to find the right rule number.`;
@@ -65,6 +69,7 @@ export function createTools(ctx: ToolContext) {
       name: z.string().describe("Card name; small typos are tolerated"),
     }),
     run: async ({ name }) => {
+      ctx.calls.push({ tool: "lookup_card", input: { name } });
       const card = resolveCard(name);
       if (!card) return `No card found matching "${name}".`;
       return JSON.stringify({
