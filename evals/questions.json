@@ -219,5 +219,27 @@
     ],
     "notes": "Answer supplied by the user, with must_cite 613.6. The conclusion (No) is right, but I think 613.6 is not the rule that gets you there, so I moved it to may_cite and made 613.1d and 613.1f the must_cite. Please confirm or tell me to put 613.6 back. Reasoning: 613.6 covers one effect that has parts in more than one layer (its examples are 'becomes the color of your choice and gets +1/+1' and Act of Treason's control change plus haste). It says the later parts keep applying to the same objects even if the ability generating the effect is removed. The Dryad's land-type effect only has one part, in layer 4, so there's no later layer for 613.6 to carry it into. What protects it is the layer order: layer 4 is applied before layer 6, so the Dryad still has the ability when layer 4 is applied. I could not find a CR rule that says this in so many words, only the layer list (613.1) and 613.5, so the 'removing the ability doesn't undo earlier layers' sentence is an inference from the order of the layers. Details added by Claude, please confirm: (1) the question now says Colossus targets you, since its trigger only affects creatures controlled by the target opponent (611.2c). Without that the Dryad isn't affected at all. (2) The Dryad's additional-land-play ability does stop working, as noted in the answer. The Colossus rulings include 2025-11-17 ('effects last indefinitely'). Neither card's rulings address this exact pairing.",
     "reviewed": true
+  },
+  {
+    "id": "blood-artist-simultaneous-death",
+    "question": "If Blood Artist dies at the same time as another creature, does it trigger for that creature?",
+    "cards": [
+      "Blood Artist"
+    ],
+    "expected_status": "answered",
+    "expected_answer": "Yes. Blood Artist's ability triggers for the other creature, and also for Blood Artist itself, so it triggers once for each creature that died at the same time. 'Dies' means being put into a graveyard from the battlefield (700.4), and Blood Artist's ability is a leaves-the-battlefield ability, one of the abilities that 'looks back in time': the game checks whether it triggers using how things existed immediately before the event, so Blood Artist is still there to see its own death and the other creature's (603.10a, 603.6c). Each trigger then goes on the stack separately and has its own target player, who loses 1 life while you gain 1 life (the official ruling from 2016-06-08 says the same).",
+    "must_cite": [
+      "603.10a",
+      "700.4"
+    ],
+    "may_cite": [
+      "603.10",
+      "603.6c",
+      "603.2",
+      "603.3b",
+      "704.3"
+    ],
+    "notes": "Answer supplied by the user ('yes, and for blood artist itself'); rules found by Claude. Details added by Claude, please confirm: (1) 'triggers once for each creature', so with one other creature dying alongside it there are two triggers in total. (2) Each trigger has its own target, since the ability is 'target player loses 1 life and you gain 1 life'. Key card ruling the answer can use: Blood Artist 2016-06-08 ('If Blood Artist and one or more other creatures die at the same time, its ability will trigger for each of those creatures.'). 603.10a also contains a direct example of an artifact seeing creatures that die at the same time as it does. This is the question the first live `npm run ask` test used.",
+    "reviewed": true
   }
 ]
