@@ -11,6 +11,7 @@
     "ingest:embeddings": "tsx src/ingest/cli.ts embeddings",
     "query": "tsx scripts/query.ts",
     "ask": "tsx scripts/ask.ts",
+    "eval": "tsx scripts/eval.ts",
     "smoke-test": "tsx scripts/smoke-test.ts",
     "test": "vitest run"
   },

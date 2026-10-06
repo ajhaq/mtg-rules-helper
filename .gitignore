@@ -6,3 +6,4 @@ data/bulk/
 data/comp-rules.txt
 *.log
 .env
+evals/results/

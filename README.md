@@ -84,7 +84,7 @@ that doesn't exist (or that no tool actually showed the model) is listed under
 `CITATION WARNINGS`. The last line reports requests and tokens used so you can
 see what each question costs.
 
-Defaults to `claude-opus-5-5`; set `MTG_RULES_MODEL` to try another model.
+Defaults to `claude-sonnet-5-5`; set `MTG_RULES_MODEL` to try another model.
 The request opts into server-side refusal fallbacks (`fallbacks: "default"`).
 
 ### Unit tests
@@ -94,6 +94,31 @@ npm test
 ```
 
 Covers citation verification (no database or API needed).
+
+### Eval set (needs Claude credentials)
+
+```bash
+npm run eval                                   # every reviewed question in evals/questions.json
+npm run eval -- --id obeka-stack-and-response  # one or more ids, comma separated
+npm run eval -- --all                          # include unreviewed questions
+npm run eval -- --concurrency 1                # default is 3
+```
+
+Each question is answered by the full pipeline, then scored three ways. A
+question passes only if all three hold:
+
+1. The answer's `status` matches `expected_status`.
+2. Every `must_cite` rule was cited (a lettered subrule counts for its parent,
+   so citing `118.9a` satisfies `118.9`).
+3. A second Claude call grades the answer against `expected_answer` as
+   `correct`, `partially_correct` or `incorrect`; only `correct` passes. The
+   grader sees the question, the reference answer and the app's answer, not
+   `must_cite` or `notes`. It uses `MTG_RULES_GRADER_MODEL`, falling back to
+   `MTG_RULES_MODEL`.
+
+Results (answers, grades, citation warnings, token usage) are written to
+`evals/results/` (gitignored). The command exits non-zero if any question
+fails. Entries with `"reviewed": false` are skipped unless you pass `--all`.
 
 ### Smoke test (no network dependency on Scryfall or a real CR download)
 
@@ -120,5 +145,6 @@ paths end to end. Still downloads the local embedding model on first run.
 
 ## Next steps (not in this repo yet)
 
-- An eval set of known rules-interaction Q&A pairs to test synthesis quality.
+- A check that cited rules actually support the step they're attached to (the
+  citation verifier only checks that the rule exists and was retrieved).
 - A minimal chat UI.
