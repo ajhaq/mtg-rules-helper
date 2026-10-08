@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { answerQuestion, type AnswerResult } from "../synthesis/answer.js";
+import type { AnswerResult } from "../synthesis/answer.js";
 import { z } from "zod";
 import { HTTPException } from 'hono/http-exception';
 import Anthropic from "@anthropic-ai/sdk";
@@ -8,7 +8,7 @@ export type AnswerFn = (question: string) => Promise<AnswerResult>;
 
 const schema = z.object({ question: z.string().trim().min(1).max(1000) })
 
-export function createApp(answer: AnswerFn = (q) => answerQuestion(q)) {
+export function createApp(answer: AnswerFn) {
     const app = new Hono();
     app.get("/health", (c) => c.json({ status: "ok" }));
 
