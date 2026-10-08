@@ -45,10 +45,10 @@ describe("createRateLimiter", () => {
     it("sweep removes keys whose requests are all outside the window", () => {
         limiter.check("a");
         limiter.sweep();
-        expect(limiter.size()).toBe(1);   // still inside the window, kept
+        expect(limiter.size()).toBe(1); 
         time = 1001;
         limiter.sweep();
-        expect(limiter.size()).toBe(0);   // outside the window, removed
+        expect(limiter.size()).toBe(0);   
     });
 
     it("refuses a max below 1", () => {
