@@ -41,4 +41,69 @@ describe("POST /ask", () => {
         expect(json).not.toHaveProperty("usage");
         expect(json).not.toHaveProperty("toolCalls");
     })
+
+    it("passes the trimmed question to the answer function", async () => {
+        const fake = vi.fn(async () => fakeResult);
+        const app = createApp(fake);
+
+        await post(app, JSON.stringify({ question: "     Does Blood Artist trigger?     "}));
+
+        expect(fake).toHaveBeenCalledOnce();
+        expect(fake).toHaveBeenCalledWith("Does Blood Artist trigger?");        
+    })
+
+    it("returns 400 on malformed JSON", async () => {
+        const fake = vi.fn(async () => fakeResult);
+        const app = createApp(fake);
+
+        const res = await post(app, "{not json");
+
+        expect(res.status).toBe(400);
+        expect(fake).not.toHaveBeenCalled();
+    })
+
+    it("returns 400 on empty question", async () => {
+        const fake = vi.fn(async () => fakeResult);
+        const app = createApp(fake);
+
+        const res = await post(app, JSON.stringify({ question: "   "}));
+        
+        expect(res.status).toBe(400);
+        expect(fake).not.toHaveBeenCalled();
+    })
+
+    it("returns 400 on a question longer than 1000 characters", async () => {
+        const fake = vi.fn(async () => fakeResult);
+        const app = createApp(fake);
+
+        const res = await post(app, JSON.stringify({ question: "x".repeat(1001)}));
+        
+        expect(res.status).toBe(400);
+        expect(fake).not.toHaveBeenCalled();
+    })
+
+    it("returns 400 when no request body is passed", async () => {
+        const fake = vi.fn(async () => fakeResult);
+        const app = createApp(fake);
+
+        const res = await post(app, "");
+        
+        expect(res.status).toBe(400);
+        expect(fake).not.toHaveBeenCalled();
+    })
+
+    it("returns a generic 500 and hides error details when answering fails", async () => {
+        const logSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+        const app = createApp(async () => {
+            throw new Error("secret detail");
+        });
+
+        const res = await post(app, JSON.stringify({ question: "Does Blood Artist trigger?" }));
+
+        expect(res.status).toBe(500);
+        expect(await res.text()).not.toContain("secret detail");
+        expect(logSpy).toHaveBeenCalled();
+
+        logSpy.mockRestore();
+    })
 })
