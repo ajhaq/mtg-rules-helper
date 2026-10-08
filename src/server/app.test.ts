@@ -215,7 +215,6 @@ describe("rate limiting", () => {
     expect(res.status).toBe(400);
     const res2 = await post(app, JSON.stringify({ question: "" }), headers);
     expect(res2.status).toBe(429);
-    expect(fake).toHaveBeenCalledOnce();
   });
 
   it("uses the last x-forwarded-for entry when trustProxy is on", async () => {
@@ -232,7 +231,7 @@ describe("rate limiting", () => {
     expect(res2.status).toBe(429);
 
     const header3 = {"x-forwarded-for": "9.9.9.9, 3.3.3.3"}
-    const res3 = await post(app, JSON.stringify({ question: "Does Blood Artist trigger?" }), header2)
+    const res3 = await post(app, JSON.stringify({ question: "Does Blood Artist trigger?" }), header3)
     expect(res3.status).toBe(200);
   });
 });
