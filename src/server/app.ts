@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { bodyLimit } from "hono/body-limit";
 import type { AnswerResult } from "../synthesis/answer.js";
 import { z } from "zod";
 import { HTTPException } from 'hono/http-exception';
@@ -11,6 +12,11 @@ const schema = z.object({ question: z.string().trim().min(1).max(1000) })
 export function createApp(answer: AnswerFn) {
     const app = new Hono();
     app.get("/health", (c) => c.json({ status: "ok" }));
+
+    app.use("/ask", bodyLimit({
+        maxSize: 8 * 1024, //8 KB, requests shouldnt be any bigger than this 
+        onError: (c) => c.json({ error: "Request too large."}, 413)
+    }));
 
     app.post("/ask", async (c) => {
         let body: unknown;

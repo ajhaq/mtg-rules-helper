@@ -106,4 +106,14 @@ describe("POST /ask", () => {
 
         logSpy.mockRestore();
     })
+
+    it("returns a 413 when request body is too large", async () => {
+        const fake = vi.fn(async () => fakeResult);
+        const app = createApp(fake);
+
+        const res = await post(app, JSON.stringify({ question: "x".repeat(10 * 1024)}));
+        
+        expect(res.status).toBe(413);
+        expect(fake).not.toHaveBeenCalled();
+    })
 })
