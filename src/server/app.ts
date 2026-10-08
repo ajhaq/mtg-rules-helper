@@ -9,8 +9,11 @@ export type AnswerFn = (question: string) => Promise<AnswerResult>;
 
 const schema = z.object({ question: z.string().trim().min(1).max(1000) })
 
-export function createApp(answer: AnswerFn) {
+export function createApp(answer: AnswerFn, options: {maxConcurrent?: number } = {}) {
     const app = new Hono();
+    const maxConcurrent = options.maxConcurrent ?? 5;
+    let inFlight = 0;
+
     app.get("/health", (c) => c.json({ status: "ok" }));
 
     app.use("/ask", bodyLimit({
@@ -20,7 +23,7 @@ export function createApp(answer: AnswerFn) {
 
     app.post("/ask", async (c) => {
         let body: unknown;
-        // 1. read and parse the JSON body (400 if it's invalid)
+        //read and parse the JSON body (400 if it's invalid)
         try {
             body = await c.req.json();
         }
@@ -28,21 +31,33 @@ export function createApp(answer: AnswerFn) {
             return c.json({ error: "Request body must be valid json" }, 400)
         }
 
-        // 2. validate it with your zod schema (400 if it fails)
+        //validate it with your zod schema (400 if it fails)
         const parsedQuestion = schema.safeParse(body);
         if (!parsedQuestion.success) {
             return c.json({ error: `Body must be {"question": "...."} with 1 to 1000 characters.` }, 400);
         }
 
-        // 3. call answer(question)
-        const result = await answer(parsedQuestion.data.question);
-        // 4. return the trimmed-down result as JSON
-        return c.json({
-            answer: result.answer,
-            citations: result.citations,
-            rulings: result.rulings,
-            warnings: result.warnings
+        //dont do anything if there are more requests than the max concurrent allowed
+        if(inFlight >= maxConcurrent){
+            c.header("Retry-After", "10");
+            return c.json({error: "The server is busy. Please try again shortly."}, 503);
+        }
+
+        //call answer(question)
+        inFlight++
+        try{
+            const result = await answer(parsedQuestion.data.question);
+            //return the trimmed-down result as JSON
+            return c.json({
+                answer: result.answer,
+                citations: result.citations,
+                rulings: result.rulings,
+                warnings: result.warnings
         });
+        }
+        finally{
+            inFlight--;
+        }  
     });
 
     app.onError((error, c) => {
