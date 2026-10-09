@@ -5,7 +5,14 @@ deliberately narrow: **resolve "does this trigger / what happens" rules
 questions using citations from the Comprehensive Rules and official card
 rulings.** No tournament policy (MTR/IPG), no procedural questions.
 
-There is no chat UI yet — see "Next steps" below.
+There is no chat UI yet — see "Next steps" below. There is an HTTP API; see
+"Run the HTTP server".
+
+> **Unofficial fan project.** This is not affiliated with, endorsed by, or
+> sponsored by Wizards of the Coast. Magic: The Gathering and its rules and
+> card text are property of Wizards of the Coast LLC. The Comprehensive Rules
+> and card data are **not** included in this repository; you download them
+> yourself (see Setup). Card data comes from [Scryfall](https://scryfall.com).
 
 Requires **Node 22.5+** (uses the built-in `node:sqlite` module — no native
 compiler toolchain needed, unlike `better-sqlite3`).
@@ -27,6 +34,11 @@ compiler toolchain needed, unlike `better-sqlite3`).
 - `src/synthesis` — the Claude layer: a tool-calling loop (`search_rules`,
   `get_rule`, `lookup_card`) that returns a structured answer, then verifies
   every cited rule against the database.
+- `src/server` — an HTTP API (Hono) around the synthesis layer, with request
+  validation, a body-size limit, a concurrency cap, a per-IP rate limit, a
+  request timeout, and graceful shutdown.
+- `evals` — a set of reviewed rules questions with expected answers, run by
+  `npm run eval` (see "Eval set").
 
 ## Setup
 
@@ -87,13 +99,66 @@ see what each question costs.
 Defaults to `claude-sonnet-5-5`; set `MTG_RULES_MODEL` to try another model.
 The request opts into server-side refusal fallbacks (`fallbacks: "default"`).
 
+### Run the HTTP server (needs Claude credentials)
+
+```bash
+export ANTHROPIC_API_KEY=...
+npm run serve
+```
+
+Starts on port 3000 (override with `PORT`). Then:
+
+```bash
+curl localhost:3000/health
+curl localhost:3000/ask -H "content-type: application/json" \
+  -d '{"question":"If Blood Artist dies at the same time as another creature, does it trigger for that creature?"}'
+```
+
+(In Windows PowerShell, `curl` is an alias for something else; use
+`Invoke-RestMethod -Uri http://localhost:3000/ask -Method Post -ContentType "application/json" -Body '{"question":"..."}'`.)
+
+**`GET /health`** returns `{"status":"ok"}`.
+
+**`POST /ask`** takes `{"question": "<1 to 1000 characters>"}` and returns
+`answer` (status, short answer, resolution steps, caveats), `citations` (rule
+numbers with their text from the database), `rulings` and `warnings`. Errors
+come back as `{"error": "..."}` with a generic message; details go to the
+server log only:
+
+| Status | Meaning |
+| --- | --- |
+| 400 | Invalid JSON or invalid question |
+| 413 | Request body over 8 KB |
+| 429 | Too many requests from this IP (`Retry-After` header set) |
+| 503 | Server busy (concurrency cap) or the model API is overloaded (`Retry-After` set) |
+| 504 | The question took longer than the request timeout |
+| 500 | Anything else |
+
+Configuration (all optional, set as environment variables):
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PORT` | 3000 | Port to listen on |
+| `MAX_CONCURRENT` | 5 | Questions answered at once; extras get a 503 |
+| `RATE_LIMIT_MAX` | 10 | Questions allowed per IP per window |
+| `RATE_LIMIT_WINDOW_MS` | 3600000 | Rate-limit window (one hour) |
+| `REQUEST_TIMEOUT_MS` | 120000 | Give up on a question after this long |
+| `TRUST_PROXY` | unset | Set to `1` behind a reverse proxy so the client IP is read from the last `x-forwarded-for` entry |
+| `MTG_RULES_MODEL` | `claude-sonnet-5-5` | Model that answers questions |
+
+The rate limit and concurrency cap are kept in memory, so each server
+instance enforces its own. Each question costs real API money, so set a spend
+limit on your Anthropic workspace too.
+
 ### Unit tests
 
 ```bash
 npm test
 ```
 
-Covers citation verification (no database or API needed).
+Covers citation verification, eval scoring, and the HTTP server (routes,
+validation, error handling, rate limiting, concurrency and timeouts), all with
+a fake answer function. No database, API key or network is needed.
 
 ### Eval set (needs Claude credentials)
 
