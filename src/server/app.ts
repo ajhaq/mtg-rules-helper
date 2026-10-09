@@ -13,9 +13,10 @@ export interface AppOptions {
   rateLimiter?: RateLimiter;
   getClientIp?: (c: Context) => string;
   trustProxy?: boolean;
+  timeoutMs?: number;
 }
 
-export type AnswerFn = (question: string) => Promise<AnswerResult>;
+export type AnswerFn = (question: string, signal?: AbortSignal) => Promise<AnswerResult>;
 
 const schema = z.object({ question: z.string().trim().min(1).max(1000) })
 
@@ -32,6 +33,7 @@ function defaultGetClientIp(trustProxy: boolean) {
 export function createApp(answer: AnswerFn, options: AppOptions = {}) {
     const app = new Hono();
     const maxConcurrent = options.maxConcurrent ?? 5;
+    const timeoutMs = options.timeoutMs ?? 120_000;
     let inFlight = 0;
 
     app.get("/health", (c) => c.json({ status: "ok" }));
@@ -82,7 +84,8 @@ export function createApp(answer: AnswerFn, options: AppOptions = {}) {
         //call answer(question)
         inFlight++
         try{
-            const result = await answer(parsedQuestion.data.question);
+            const signal = AbortSignal.timeout(timeoutMs);
+            const result = await answer(parsedQuestion.data.question, signal);
             //return the trimmed-down result as JSON
             return c.json({
                 answer: result.answer,
@@ -104,6 +107,10 @@ export function createApp(answer: AnswerFn, options: AppOptions = {}) {
         if (error instanceof Anthropic.APIError && (error.status === 429 || error.status === 529)){
             c.header("Retry-After", "30");
             return c.json({ error: "The service is busy. Please try again shortly." }, 503);
+        }
+        //gateway timeout if request takes too long
+        if (error instanceof Anthropic.APIUserAbortError){
+            return c.json({error: "That question took to long to answer. Please try again."}, 504)
         }
         return c.json({ error: "Something went wrong answering that question."}, 500);
     })

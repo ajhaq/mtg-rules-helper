@@ -12,8 +12,9 @@ const limiter = createRateLimiter({
 });
 setInterval(() => limiter.sweep(), 60_000).unref();
 
-const app = createApp((q) => answerQuestion(q), {
+const app = createApp((q, signal) => answerQuestion(q, undefined, { signal }), {
     maxConcurrent: Number(process.env.MAX_CONCURRENT) || 5,
+    timeoutMs: Number(process.env.REQUEST_TIMEOUT_MS) || 120_000,
     rateLimiter: limiter,
     trustProxy: process.env.TRUST_PROXY === "1"
 });
@@ -23,6 +24,7 @@ const server = serve({ fetch: app.fetch, port, hostname: "0.0.0.0" }, () => {
 });
 
 function shutdown() {
+    setTimeout( () => process.exit(1), 10_000).unref();
     server.close(() => {
         closeDb();
         process.exit(0)

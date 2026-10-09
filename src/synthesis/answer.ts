@@ -26,7 +26,10 @@ export interface AnswerResult extends VerifiedAnswer {
   };
 }
 
-export async function answerQuestion(question: string, client: Anthropic = new Anthropic()): Promise<AnswerResult> {
+export async function answerQuestion(
+  question: string, 
+  client: Anthropic = new Anthropic(),
+  options: { signal?: AbortSignal } = {} ): Promise<AnswerResult> {
   const ctx = createToolContext();
 
   const runner = client.beta.messages.toolRunner({
