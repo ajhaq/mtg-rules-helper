@@ -2,14 +2,17 @@ import type { EmbeddingProvider } from "./provider.js";
 
 // Runs fully locally via ONNX (no API key). Downloads and caches the model
 // under node_modules/@xenova/transformers/.cache on first use.
-const MODEL_NAME = "Xenova/all-MiniLM-L6-v2";
+
+const MODEL_NAME = "Xenova/all-MiniLM-L6-v2"; //this is a well-known sentence-embedding model that turns rules =text and questions into vectors for the semantic search
 const DIMS = 384;
 
 let pipelinePromise: Promise<any> | undefined;
 
 async function getPipeline() {
   if (!pipelinePromise) {
-    const { pipeline } = await import("@xenova/transformers");
+    const { pipeline, env } = await import("@xenova/transformers");
+    if(process.env.MTG_RULES_MODEL_DIR) env.cacheDir = process.env.MTG_RULES_MODEL_DIR;
+    if (process.env.MTG_RULES_OFFLINE === "1") env.allowRemoteModels = false;
     pipelinePromise = pipeline("feature-extraction", MODEL_NAME);
   }
   return pipelinePromise;

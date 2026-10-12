@@ -15,7 +15,8 @@
     "smoke-test": "tsx scripts/smoke-test.ts",
     "test": "vitest run",
     "serve": "tsx src/server/index.ts",
-    "start": "node dist/src/server/index.js"
+    "start": "node dist/src/server/index.js",
+    "warm-up": "tsx scripts/warm-up.ts"
   },
   "engines": {
     "node": ">=22.5.0"
