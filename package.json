@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node -e \"require('fs').copyFileSync('src/db/schema.sql','dist/src/db/schema.sql')\"",
     "ingest:cards": "tsx src/ingest/cli.ts cards",
     "ingest:rules": "tsx src/ingest/cli.ts rules",
     "ingest:embeddings": "tsx src/ingest/cli.ts embeddings",

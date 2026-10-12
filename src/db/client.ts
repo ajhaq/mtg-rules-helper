@@ -5,14 +5,22 @@ import { readFileSync, mkdirSync } from "node:fs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = join(__dirname, "..", "..", "data");
-const DEFAULT_DB_PATH = join(DATA_DIR, "rules.sqlite");
+const DEFAULT_DB_PATH = process.env.MTG_RULES_DB_PATH ?? join(DATA_DIR, "rules.sqlite");
 
 let db: DatabaseSync | undefined;
 
-export function getDb(path: string = DEFAULT_DB_PATH): DatabaseSync {
+export function getDb(
+  path: string = DEFAULT_DB_PATH,
+  options: { readOnly?: boolean } = {}): DatabaseSync {
   if (db) return db;
 
-  mkdirSync(DATA_DIR, { recursive: true });
+  if(options.readOnly){
+    db = new DatabaseSync(path, { readOnly: true});
+    db.exec("PRAGMA foreign_keys = ON");
+    return db;
+  }
+
+  mkdirSync(dirname(path), { recursive: true });
   db = new DatabaseSync(path);
   db.exec("PRAGMA journal_mode = WAL");
   db.exec("PRAGMA foreign_keys = ON");

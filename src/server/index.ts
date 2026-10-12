@@ -1,5 +1,5 @@
 import { serve } from "@hono/node-server";
-import { closeDb } from "../db/client.js";
+import { closeDb, getDb } from "../db/client.js";
 import { createApp } from "./app.js";
 import { answerQuestion } from "../synthesis/answer.js";
 import { createRateLimiter } from "./rateLimit.js";
@@ -11,6 +11,8 @@ const limiter = createRateLimiter({
   windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 60 * 60 * 1000,
 });
 setInterval(() => limiter.sweep(), 60_000).unref();
+
+getDb(undefined, { readOnly: true});
 
 const app = createApp((q, signal) => answerQuestion(q, undefined, { signal }), {
     maxConcurrent: Number(process.env.MAX_CONCURRENT) || 5,
