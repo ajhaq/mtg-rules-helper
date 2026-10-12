@@ -5,7 +5,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.json && node -e \"require('fs').copyFileSync('src/db/schema.sql','dist/src/db/schema.sql')\"",
+    "build": "tsc -p tsconfig.build.json && node -e \"require('fs').copyFileSync('src/db/schema.sql','dist/src/db/schema.sql')\"",
     "ingest:cards": "tsx src/ingest/cli.ts cards",
     "ingest:rules": "tsx src/ingest/cli.ts rules",
     "ingest:embeddings": "tsx src/ingest/cli.ts embeddings",
@@ -14,7 +14,8 @@
     "eval": "tsx scripts/eval.ts",
     "smoke-test": "tsx scripts/smoke-test.ts",
     "test": "vitest run",
-    "serve": "tsx src/server/index.ts"
+    "serve": "tsx src/server/index.ts",
+    "start": "node dist/src/server/index.js"
   },
   "engines": {
     "node": ">=22.5.0"
