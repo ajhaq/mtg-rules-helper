@@ -12,11 +12,11 @@ const MODEL = process.env.MTG_RULES_MODEL ?? "claude-sonnet-5-5";
 const MAX_ITERATIONS = 16;
 
 export interface AnswerResult extends VerifiedAnswer {
-  /** The model that produced the final message (differs from the requested model if a refusal fallback ran). */
+  //The model that produced the final message (differs from the requested model if a refusal fallback ran).
   model: string;
-  /** Number of API requests in the tool loop. */
+  // Number of API requests in the tool loop. 
   iterations: number;
-  /** Tool calls the model made, in order. */
+  // Tool calls made, in order
   toolCalls: { tool: string; input: unknown }[];
   usage: {
     input_tokens: number;

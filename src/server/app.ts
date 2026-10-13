@@ -18,6 +18,8 @@ export interface AppOptions {
 
 export type AnswerFn = (question: string, signal?: AbortSignal) => Promise<AnswerResult>;
 
+//defines the schema as {"question": "...."} with 1 to 1000 characters
+//zod is essentially a validation helper here
 const schema = z.object({ question: z.string().trim().min(1).max(1000) })
 
 function defaultGetClientIp(trustProxy: boolean) {
