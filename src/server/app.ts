@@ -69,7 +69,7 @@ export function createApp(answer: AnswerFn, options: AppOptions = {}) {
             return c.json({ error: "Request body must be valid json" }, 400)
         }
 
-        //validate it with your zod schema (400 if it fails)
+        //validate it with zod schema (400 if it fails)
         const parsedQuestion = schema.safeParse(body);
         if (!parsedQuestion.success) {
             return c.json({ error: `Body must be {"question": "...."} with 1 to 1000 characters.` }, 400);
