@@ -87,6 +87,7 @@ export function createApp(answer: AnswerFn, options: AppOptions = {}) {
         inFlight++
         try{
             const signal = AbortSignal.timeout(timeoutMs);
+            //this calls whatever function we DI in, in this case answerQuestion
             const result = await answer(parsedQuestion.data.question, signal);
             //return the trimmed-down result as JSON
             return c.json({

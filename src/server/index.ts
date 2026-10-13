@@ -16,6 +16,7 @@ setInterval(() => limiter.sweep(), 60_000).unref();
 getDb(undefined, { readOnly: true});
 
 //create the app with concurrency, timeouts, rate limiter
+//DI answerQuestion from synthesis answer.ts into the app
 const app = createApp((q, signal) => answerQuestion(q, undefined, { signal }), {
     maxConcurrent: Number(process.env.MAX_CONCURRENT) || 5,
     timeoutMs: Number(process.env.REQUEST_TIMEOUT_MS) || 120_000,
