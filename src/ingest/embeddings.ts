@@ -6,6 +6,7 @@ import type { RuleRecord } from "../types.js";
 
 const BATCH_SIZE = 32;
 
+//uses that embeddings provider to insert vector embeddings into the appropriate table
 export async function ingestRuleEmbeddings(
   provider: EmbeddingProvider = localEmbeddingProvider
 ): Promise<{ embedded: number }> {

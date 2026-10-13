@@ -89,6 +89,7 @@ function resolveStat(card: ScryfallCard, key: StatKey): string | null {
   return faceValues.length ? faceValues.join(" // ") : null;
 }
 
+//downloads cards from scryfall and puts them into the cards table
 export async function ingestCards(): Promise<{ cards: number }> {
   const db = getDb();
   const uri = await getBulkDownloadUri("oracle_cards");
@@ -131,6 +132,7 @@ export async function ingestCards(): Promise<{ cards: number }> {
   return { cards: count };
 }
 
+//downloads rulings from scryfall and puts them into the rulings table
 export async function ingestRulings(): Promise<{ rulings: number }> {
   const db = getDb();
   const uri = await getBulkDownloadUri("rulings");

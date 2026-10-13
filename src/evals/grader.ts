@@ -6,6 +6,7 @@ import type { EvalQuestion } from "./questions.js";
 
 const GRADER_MODEL = process.env.MTG_RULES_GRADER_MODEL ?? process.env.MTG_RULES_MODEL ?? "claude-sonnet-5-5";
 
+//zod is essentially a schema validator. here we are setting the grade schema
 export const GradeSchema = z.object({
   verdict: z
     .enum(["correct", "partially_correct", "incorrect"])

@@ -6,6 +6,7 @@ import { createRateLimiter } from "./rateLimit.js";
 
 const port = Number(process.env.PORT) || 3000;
 
+//10 requests per hour
 const limiter = createRateLimiter({
   max: Number(process.env.RATE_LIMIT_MAX) || 10,
   windowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || 60 * 60 * 1000,
@@ -14,6 +15,7 @@ setInterval(() => limiter.sweep(), 60_000).unref();
 
 getDb(undefined, { readOnly: true});
 
+//create the app with concurrency, timeouts, rate limiter
 const app = createApp((q, signal) => answerQuestion(q, undefined, { signal }), {
     maxConcurrent: Number(process.env.MAX_CONCURRENT) || 5,
     timeoutMs: Number(process.env.REQUEST_TIMEOUT_MS) || 120_000,

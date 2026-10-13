@@ -11,6 +11,8 @@ export function bufferToFloats(buf: Uint8Array): Float32Array {
   return new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4);
 }
 
+//determines similarity based on the cosine of the angle between the two vectors
+//-1 to 1, 1 = vectors point in same direction (most similar), 0 = vectors are orthogonal (no similarity), -1 = vectors point in opposite directions
 export function cosineSimilarity(a: Float32Array, b: Float32Array): number {
   let dot = 0;
   let normA = 0;
