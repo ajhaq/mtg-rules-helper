@@ -22,11 +22,7 @@ export function findCardsByContains(fragment: string, limit = 10): CardRecord[] 
     .all(`%${normalize(fragment)}%`, limit) as unknown as CardRecord[];
 }
 
-/**
- * Best-effort card resolution: exact match, then substring, then fuzzy
- * (Levenshtein) against the full name list. Returns undefined if nothing is
- * close enough to be confident about.
- */
+//best-effort card resolution: exact match, then substring, then fuzzy (levenshtein). returns undefined if nothing close enough
 export function resolveCard(nameGuess: string): CardRecord | undefined {
   const exact = findCardByExactName(nameGuess);
   if (exact) return exact;

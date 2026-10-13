@@ -7,7 +7,7 @@ import type { RuleRecord, RuleSearchResult } from "../types.js";
 const KEYWORD_WEIGHT = 0.4;
 const SEMANTIC_WEIGHT = 0.6;
 
-/** Exact rule-number lookup, e.g. "509.1a" or "704.5g". */
+// Exact rule-number lookup, e.g. "509.1a" or "704.5g".
 export function getRuleByNumber(ruleNumber: string): RuleRecord | undefined {
   const db = getDb();
   return db.prepare(`SELECT * FROM rules WHERE rule_number = ?`).get(ruleNumber) as unknown as
@@ -15,7 +15,7 @@ export function getRuleByNumber(ruleNumber: string): RuleRecord | undefined {
     | undefined;
 }
 
-/** A rule plus its lettered subrules, e.g. "603.10" -> 603.10, 603.10a, 603.10b... in document order. */
+// A rule plus its lettered subrules, e.g. "603.10" -> 603.10, 603.10a, 603.10b... in document order
 export function getRuleWithSubrules(ruleNumber: string): RuleRecord[] {
   const db = getDb();
   return db
@@ -23,6 +23,8 @@ export function getRuleWithSubrules(ruleNumber: string): RuleRecord[] {
     .all(ruleNumber, `${ruleNumber}[a-z]`) as unknown as RuleRecord[];
 }
 
+//keyword search (full text searching and BM25 algo)
+//BM25 estimates relivance of a document to a given query
 function keywordSearch(query: string, limit: number): Map<number, number> {
   const db = getDb();
   // FTS5 needs quoted tokens to tolerate punctuation/keywords like "may" safely.
@@ -48,6 +50,7 @@ function keywordSearch(query: string, limit: number): Map<number, number> {
   return scores;
 }
 
+//semantic search using cosine similarity
 async function semanticSearch(
   query: string,
   limit: number,
@@ -77,11 +80,7 @@ export interface SearchRulesOptions {
   provider?: EmbeddingProvider;
 }
 
-/**
- * Hybrid search: BM25 keyword matching (good for exact terminology like
- * "regenerate" or "state-based") combined with embedding similarity (good
- * for paraphrased questions). Scores are merged and re-ranked.
- */
+//hybrid search, BM25 keyword matching ("regenerate", "state-based") combined with semantic searching (vector embedding similarity)
 export async function searchRules(query: string, options: SearchRulesOptions = {}): Promise<RuleSearchResult[]> {
   const limit = options.limit ?? 10;
   const provider = options.provider ?? localEmbeddingProvider;
