@@ -82,7 +82,7 @@ function resolveOracleText(card: ScryfallCard): string | null {
   return null;
 }
 
-/** Printed power/toughness/loyalty/defense; multi-faced cards get one value per face joined with " // ". Kept as text because values can be "*" or "1+*". */
+//power/toughness/loyalty/defense; multi-faced cards get one value per face joined with " // ". Kept as text because values can be "*" or "1+*".
 function resolveStat(card: ScryfallCard, key: StatKey): string | null {
   if (card[key] !== undefined) return card[key];
   const faceValues = (card.card_faces ?? []).map((f) => f[key]).filter((v): v is string => v !== undefined);
@@ -109,7 +109,7 @@ export async function ingestCards(): Promise<{ cards: number }> {
   let count = 0;
   withTransaction(db, () => {
     for (const card of cards) {
-      if (!card.oracle_id) continue; // skip layouts without a stable oracle id (e.g. some art series)
+      if (!card.oracle_id) continue; // skip layouts without a stable oracle id (art cards, etc)
       insert.run({
         oracle_id: card.oracle_id,
         name: card.name,
