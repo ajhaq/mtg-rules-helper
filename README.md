@@ -8,7 +8,7 @@ rulings.** No tournament policy (MTR/IPG), no procedural questions.
 There is no chat UI yet — see "Next steps" below. There is an HTTP API; see
 "Run the HTTP server".
 
-> **Unofficial fan project.** This is not affiliated with, endorsed by, or
+> **Unofficial fan personal project.** This is not affiliated with, endorsed by, or
 > sponsored by Wizards of the Coast. Magic: The Gathering and its rules and
 > card text are property of Wizards of the Coast LLC. The Comprehensive Rules
 > and card data are **not** included in this repository; you download them
