@@ -105,3 +105,34 @@ jobs:
           tags: ${{ steps.ecr.outputs.registry }}/mtg-rules-helper:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+  deploy:
+    needs: publish
+    if: vars.ECS_SERVICE_ARN != ''
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - uses: aws-actions/amazon-ecr-login@v2
+        id: ecr
+
+      - name: Render container config
+        run: |
+          IMAGE="${{ steps.ecr.outputs.registry }}/mtg-rules-helper:${{ github.sha }}"
+          jq --arg image "$IMAGE" '.image = $image' deploy/container.json > container.json
+
+      - name: Deploy
+        run: |
+          aws ecs update-express-gateway-service \
+            --service-arn "${{ vars.ECS_SERVICE_ARN }}" \
+            --primary-container file://container.json \
+            --monitor-resources DEPLOYMENT \
+            --monitor-mode TEXT-ONLY
