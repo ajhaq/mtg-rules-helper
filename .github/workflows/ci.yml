@@ -35,3 +35,39 @@ jobs:
 
       - name: Build
         run: npm run build
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Create empty placeholder database
+        run: |
+          mkdir -p data
+          node -e "new (require('node:sqlite').DatabaseSync)('data/rules.sqlite').close()"
+
+      - uses: docker/setup-buildx-action@v3
+
+      - name: Build image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: false
+          load: true
+          tags: mtg-rules-helper:ci
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Smoke test container
+        run: |
+          docker run -d --name app -p 3000:3000 mtg-rules-helper:ci
+          for i in $(seq 1 20); do
+            curl -fs http://localhost:3000/health && exit 0
+            sleep 2
+          done
+          docker logs app
+          exit 1
