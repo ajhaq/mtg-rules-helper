@@ -1,0 +1,11 @@
+{
+  "image": "placeholder",
+  "containerPort": 3000,
+  "environment": [{ "name": "TRUST_PROXY", "value": "1" }],
+  "secrets": [
+    {
+      "name": "ANTHROPIC_API_KEY",
+      "valueFrom": "arn:aws:secretsmanager:us-east-2:157264476148:secret:anthropic-api-key-QaOJZb"
+    }
+  ]
+}
