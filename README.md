@@ -1,7 +1,7 @@
 # mtg-rules-helper
 
-Ingestion, retrieval and Claude synthesis for an MTG rules-question tool. Scope is
-deliberately narrow: **resolve "does this trigger / what happens" rules
+Ingestion, retrieval and Claude synthesis for an MTG rules-question tool. Intended
+to resolve specific questions: **"does this trigger / what happens" rules
 questions using citations from the Comprehensive Rules and official card
 rulings.** No tournament policy (MTR/IPG), no procedural questions.
 
